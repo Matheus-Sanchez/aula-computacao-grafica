@@ -27,20 +27,45 @@ void main() {                                                   \n\
 
 void  criaTriangulo() {
     GLfloat vertices[] = {
-        0.0f, 1.0f,   // VÈrtice 1
-        -1.0f, -1.0f, // VÈrtice 2
-        1.0f, -1.0f   // VÈrtice 3
+        0.0f, 1.0f,   // V√©rtice 1
+        -1.0f, -1.0f, // V√©rtice 2
+        1.0f, -1.0f   // V√©rtice 3
 
     };
 
 	// Cria o VAO e o VBO
     glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
+     glGenBuffers(1, &VBO);
+     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+     
+	    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	    glEnableVertexAttribArray(0);
+	  glBindBuffer(GL_ARRAY_BUFFER, 0);
+	 glBindVertexArray(0);
+};
 
+
+void adicionaTriangulo(GLuint program, char* shaderCode, GLenum type) {
+	GLuint shader = glCreateShader(type);
+    
+
+    //converte char para GL_char
+	const GLchar* code[1];
+	code[0] = shaderCode;
+
+	glShaderSource(shader, 1, code, NULL);
+	glCompileShader(shader);
+    
+    //tratar os erros de compilacao
+
+	glAttachShader(program, shader);
+    
 
 };
 
-// FunÁ„o de inicializaÁ„o
+// Fun√ß√£o de inicializa√ß√£o
 void Inicializa() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -48,7 +73,7 @@ void Inicializa() {
     glClearColor(0.75, 0.0, 0.80, 0.85);
 }
 
-// FunÁ„o de desenho
+// Fun√ß√£o de desenho
 void Desenha() {
     glClear(GL_COLOR_BUFFER_BIT);
     glColor3f(0.3, 0.0, 0.3);
@@ -69,12 +94,12 @@ int main() {
         return -1;
     }
 
-    // ConfiguraÁıes do contexto OpenGL
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // Vers„o maior do OpenGL
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // Vers„o menor do OpenGL
+    // Configura√ß√µes do contexto OpenGL
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // Vers√£o maior do OpenGL
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // Vers√£o menor do OpenGL
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Perfil Core
 
-    // Cria uma janela visÌvel
+    // Cria uma janela vis√≠vel
     GLFWwindow* window = glfwCreateWindow(800, 600, "eae rapazeada", nullptr, nullptr);
     if (!window) {
         std::cerr << "Falha ao criar a janela GLFW" << std::endl;
@@ -86,7 +111,7 @@ int main() {
     glfwMakeContextCurrent(window);
 
     // Inicializa o GLEW
-    glewExperimental = GL_TRUE; // Garante suporte a extensıes modernas
+    glewExperimental = GL_TRUE; // Garante suporte a extens√µes modernas
     if (glewInit() != GLEW_OK) {
         std::cerr << "Falha ao inicializar o GLEW" << std::endl;
         glfwDestroyWindow(window);
@@ -94,7 +119,7 @@ int main() {
         return -1;
     }
 
-    // Exibe informaÁıes sobre a vers„o do OpenGL
+    // Exibe informa√ß√µes sobre a vers√£o do OpenGL
     std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
     // Inicializa o OpenGL
@@ -117,3 +142,4 @@ int main() {
     glfwTerminate();
     return 0;
 }
+
